@@ -25,7 +25,18 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	// Handle damage
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+	// Handle death
+	virtual void Die();
 public:	
+
+	UPROPERTY(EditAnywhere, Category="Health")
+	float MaxHealth = 100.0f;
+	UPROPERTY(VisibleAnywhere, Category = "Health") //VisibleAnywhere
+	float _currentHealth;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

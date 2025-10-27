@@ -15,7 +15,37 @@ AWagon_Character::AWagon_Character()
 void AWagon_Character::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	_currentHealth = MaxHealth;
+}
+
+// <summary>
+// Handle damage
+// </summary>
+// <param name="DamageAmount">The amount of damage to apply</param>
+// <param name="DamageEvent">The damage event</param>
+// <param name="EventInstigator">The controller that instigated the damage</param>
+// <param name="DamageCauser">The actor that caused the damage</param>
+float AWagon_Character::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	// Apply damage
+	_currentHealth -= DamageAmount;
+
+	UE_LOG(LogTemp, Log, TEXT("Character took %f damage, current health: %f"), DamageAmount, _currentHealth);
+
+	// Check for death
+	if (_currentHealth <= 0.0f)
+	{
+		Die();
+	}
+
+	return DamageAmount;
+}
+
+void AWagon_Character::Die()
+{
+	// This and we need inplement animations and effects
+	moveSpeed = 0.0f; // Stop movement
+	rotationSpeed = 0.0f; // Stop rotation
 }
 
 // Called every frame
