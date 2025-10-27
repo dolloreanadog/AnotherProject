@@ -46,7 +46,21 @@ void AWagon_Character::Die()
 	// This and we need inplement animations and effects
 	moveSpeed = 0.0f; // Stop movement
 	rotationSpeed = 0.0f; // Stop rotation
+
+	OnDeath.Broadcast();
 }
+
+/*
+void AWagon_Character::OnStun()
+{
+	// Implementation can be done in Blueprint
+}
+
+void AWagon_Character::OnDeath()
+{
+	// Implementation can be done in Blueprint
+}
+*/
 
 // Called every frame
 void AWagon_Character::Tick(float DeltaTime)
@@ -92,4 +106,24 @@ void AWagon_Character::CameraRotate(float value)
 void AWagon_Character::StartJump()
 {
 	Jump();
+}
+
+void AWagon_Character::Stun(float duration)
+{
+	// Disable movement and rotation
+	moveSpeed = 0.0f;
+	rotationSpeed = 0.0f;
+	_isStunned = true;
+
+	OnStun.Broadcast(duration);
+	// Set a timer to re-enable movement and rotation after the stun duration
+	FTimerHandle UnusedHandle;
+	GetWorldTimerManager().SetTimer(UnusedHandle, [this]()
+		{
+			// Re-enable movement and rotation
+			moveSpeed = _originalMoveSpeed; // Reset to default or previous speed
+			rotationSpeed = _originalRotationSpeed; // Reset to default or previous speed
+			_isStunned = false;
+			OnStunEnd.Broadcast();
+		}, duration, false);
 }
