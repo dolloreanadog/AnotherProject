@@ -40,6 +40,15 @@ public:
 	float MaxHealth = 100.0f;
 	UPROPERTY(VisibleAnywhere, Category = "Health") //VisibleAnywhere
 	float _currentHealth;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Status Effects")
+	int maxStunCount = 2;
+	// Current stun count
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status Effects")
+	int _currentStunCount = 0;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status Effects")
+	float _stunUseCooldown = 5.0f; // Cooldown time in seconds
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Status Effects")
+	bool _canStun = true;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Status Effects")
 	bool _isStunned = false;
 
@@ -54,6 +63,14 @@ public:
 	void CameraRotate(float value);
 	void StartJump();
 
+	UFUNCTION(BlueprintCallable, Category = "Status Effects")
+	void ResetStun();
+	UFUNCTION(BlueprintCallable, Category = "Status Effects")
+	bool StunUsed();
+
+	// Heal function
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	virtual float Heal(float HealAmount);
 
 	// Stun function
 	UFUNCTION(BlueprintCallable, Category = "Status Effects") // put no ; here, it needs to be connected to the function body

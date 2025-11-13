@@ -16,6 +16,7 @@ void AWagon_Character::BeginPlay()
 {
 	Super::BeginPlay();
 	_currentHealth = MaxHealth;
+	_currentStunCount = maxStunCount;
 }
 
 // <summary>
@@ -39,6 +40,17 @@ float AWagon_Character::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 	}
 
 	return DamageAmount;
+}
+
+// <summary>
+// Heal the character by the specified amount (additional)
+// </summary>
+float AWagon_Character::Heal(float HealAmount)
+{
+	_currentHealth += HealAmount;
+	_currentHealth = FMath::Min(_currentHealth, MaxHealth); // Clamp to MaxHealth
+
+	return HealAmount;
 }
 
 void AWagon_Character::Die()
@@ -108,13 +120,46 @@ void AWagon_Character::StartJump()
 	Jump();
 }
 
+void AWagon_Character::ResetStun()
+{
+	_currentStunCount = maxStunCount;
+}
+
+// this function will be used on blueprint side to trigger stun effects like particles and sounds
+bool AWagon_Character::StunUsed()
+{
+	// false if cannot stun, true if can stun
+
+	if (_canStun && _currentStunCount > 0)
+	{
+		_currentStunCount--;
+		if (_currentStunCount <= 0)
+		{
+			_canStun = false;
+			return false;
+		}
+		else {
+			// Start cooldown timer to reset stun ability
+			FTimerHandle UnusedHandle;
+			GetWorldTimerManager().SetTimer(UnusedHandle, [this]()
+				{
+					_canStun = true;
+				}, _stunUseCooldown, false); 
+			return true;
+		}
+	}
+	return false;
+}
+
 void AWagon_Character::Stun(float duration)
 {
+
 	// Disable movement and rotation
 	moveSpeed = 0.0f;
 	rotationSpeed = 0.0f;
 	_isStunned = true;
 
+	// Broadcast the stun event
 	OnStun.Broadcast(duration);
 	// Set a timer to re-enable movement and rotation after the stun duration
 	FTimerHandle UnusedHandle;
