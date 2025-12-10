@@ -38,7 +38,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category="Health")
 	float MaxHealth = 100.0f;
-	UPROPERTY(VisibleAnywhere, Category = "Health") //VisibleAnywhere
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health") //VisibleAnywhere
 	float _currentHealth;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Status Effects")
 	int maxStunCount = 2;
