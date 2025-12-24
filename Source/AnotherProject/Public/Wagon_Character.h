@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Wagon_Character.generated.h"
 
 UCLASS()
@@ -12,8 +13,12 @@ class ANOTHERPROJECT_API AWagon_Character : public ACharacter
 	GENERATED_BODY()
 
 private:
-	UPROPERTY(EditAnywhere, Category="Movement")
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float initialMoveSpeed = 100.0f;
 	float moveSpeed = 100.0f;
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float runMoveSpeedMultiplier = 2.0f;
+	bool isRunning = false;
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float rotationSpeed = 50.0f;
 
@@ -30,6 +35,9 @@ protected:
 
 	// Handle damage
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+	virtual void DoRun();
+	virtual void StopRun();
 
 	// Handle death
 	virtual void Die();

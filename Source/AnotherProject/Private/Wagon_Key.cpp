@@ -30,6 +30,8 @@ void AWagon_Key::OpenDoor()
 	UE_LOG(LogTemp, Warning, TEXT("Attempting to open the door..."));
 	if (Door)
 	{
+		OnDoorOpen.Broadcast();
+
 		// Destroy attached actors first
 		TArray<AActor*> AttachedActors;
 		Door->GetAttachedActors(AttachedActors);

@@ -28,4 +28,11 @@ public:
 	UFUNCTION()
 	void TryOpenDoor(class AActor* OverlappingActor, class AActor* OtherActor); // Function to attempt to open the door when the player overlaps the key
 	void OpenDoor(); // Function to open the door
+
+	// Also, for the death delegate, use:
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDoorOpenDelegate);
+
+	// Declare death delegate, can now be broadcasted in C++ and used in Blueprints
+	UPROPERTY(BlueprintAssignable);
+	FOnDoorOpenDelegate OnDoorOpen;
 };

@@ -3,6 +3,7 @@
 
 #include "Wagon_Character.h"
 
+
 // Sets default values
 AWagon_Character::AWagon_Character()
 {
@@ -17,6 +18,7 @@ void AWagon_Character::BeginPlay()
 	Super::BeginPlay();
 	_currentHealth = MaxHealth;
 	_currentStunCount = maxStunCount;
+	_originalMoveSpeed = initialMoveSpeed;
 }
 
 // <summary>
@@ -40,6 +42,18 @@ float AWagon_Character::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 	}
 
 	return DamageAmount;
+}
+
+void AWagon_Character::DoRun()
+{
+	isRunning = true;
+	GetCharacterMovement()->MaxWalkSpeed = _originalMoveSpeed * runMoveSpeedMultiplier;
+}
+
+void AWagon_Character::StopRun()
+{
+	isRunning = false;
+	GetCharacterMovement()->MaxWalkSpeed = _originalMoveSpeed * 5;
 }
 
 // <summary>
@@ -78,7 +92,7 @@ void AWagon_Character::OnDeath()
 void AWagon_Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 	/*
 	MoveForward(moveSpeed * DeltaTime); // Move constantly
 	Rotate(rotationSpeed * DeltaTime); // Rotate based on rotation speed and delta time
@@ -97,7 +111,8 @@ void AWagon_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("Rotate", this, &AWagon_Character::CameraRotate);
 	// Bind jump action to input action
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AWagon_Character::Jump);
-
+	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AWagon_Character::DoRun);
+	PlayerInputComponent->BindAction("Run", IE_Released, this, &AWagon_Character::StopRun);
 }
 
 void AWagon_Character::MoveForward(float value)
